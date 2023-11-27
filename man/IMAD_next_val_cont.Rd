@@ -9,6 +9,7 @@ IMAD_next_val_cont(
   group_b,
   trtlvls = c("A", "B"),
   nu,
+  pinought = 0.5,
   weight = 0.5,
   alpha = 0.05,
   beta = 0.2
@@ -22,6 +23,8 @@ IMAD_next_val_cont(
 \item{trtlvls}{A vector containing the labels of each respective group}
 
 \item{nu}{The preset clinically meaningful difference to be looked for}
+
+\item{pinought}{The target allocation ratio for the better performing group}
 
 \item{weight}{The weight of Sample Size Re-Estimation and Random Adaptive Re-Allocation}
 
