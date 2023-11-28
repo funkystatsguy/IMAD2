@@ -6,6 +6,7 @@
 #' @param burnin The number of burn-in values desired for each treatment group
 #' @param seed A set seed to help with reproducibility
 #' @param nu The clinically meaningful significant difference to be found
+#' @param pinought The desired allocation ratio for the better treatment group
 #' @param trtlvls A vector containing the labels of each respective group
 #' @param weight The weight of Sample Size Re-Estimation and Random Adaptive Re-Allocation
 #' @param alpha The Type 1 error rate
@@ -15,7 +16,7 @@
 #' @export
 #'
 #' @examples IMAD_cont_dataset()
-IMAD_cont_dataset <- function(treatment, values, data, burnin = 10, seed, nu, trtlvls = c("A", "B"), weight = 0.5, alpha = 0.05, power = 0.8){
+IMAD_cont_dataset <- function(treatment, values, data, burnin = 10, seed, nu, pinought = 0.5, trtlvls = c("A", "B"), weight = 0.5, alpha = 0.05, power = 0.8){
   #Set warning for lack of seed and set given seed.
   if(is.na(seed)){
     warning("Please set your seed. Keep track of this seed for all future randomization schemes.")
@@ -117,7 +118,7 @@ IMAD_cont_dataset <- function(treatment, values, data, burnin = 10, seed, nu, tr
         trtfacrep <- as.factor(df[, treatment])
         newtrtvec1 <- df[trtfacrep == trtlvls[1], values]
         newtrtvec2 <- df[trtfacrep == trtlvls[2], values]
-        nextval <- IMAD_next_val_cont(newtrtvec1, newtrtvec2, trtlvls, nu)
+        nextval <- IMAD_next_val_cont(newtrtvec1, newtrtvec2, trtlvls, pinought, nu)
         allogroup <- as.factor(nextval$allocation_group)
         updatetreat <- c(updatetreat, allogroup)
       }
@@ -131,7 +132,7 @@ IMAD_cont_dataset <- function(treatment, values, data, burnin = 10, seed, nu, tr
 
     if(sum(veca == totveca) == length(trtvec) & sum(vecb == totvecb) == length(trtvec)){
       #Get next value given current vectors given burnin has been met
-      nextval <- IMAD_next_val_cont(trtvec1, trtvec2, trtlvls, nu)
+      nextval <- IMAD_next_val_cont(trtvec1, trtvec2, trtlvls, pinought, nu)
       #Assign the allocation group
       allogroup <- as.factor(nextval$allocation_group)
       #Update dataset with newest treatment group
@@ -149,7 +150,7 @@ IMAD_cont_dataset <- function(treatment, values, data, burnin = 10, seed, nu, tr
                 An allocation will be given based on current dataset without considering seed.")
 
       #Get next value given current vectors given burnin has been met
-      nextval <- IMAD_next_val_cont(trtvec1, trtvec2, trtlvls, nu)
+      nextval <- IMAD_next_val_cont(trtvec1, trtvec2, trtlvls, pinought, nu)
       #Assign the allocation group
       allogroup <- as.factor(nextval$allocation_group)
       #Update dataset with newest treatment group
